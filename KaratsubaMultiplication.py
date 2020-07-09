@@ -33,31 +33,50 @@ result = 72 · 10002 + 11538 · 1000 + 272205 = 83810205.
 
 
 """
+def zeroPad(numberString, zeros, left = True):
+    """Return the string with zeros added to the left or right."""
+    for i in range(zeros):
+        if left:
+            numberString = '0' + numberString
+        else:
+            numberString = numberString + '0'
+    return numberString
+
+def karatsubaMultiplication(x ,y):
+    """Multiply two integers using Karatsuba's algorithm."""
+    #convert to strings for easy access to digits
+    x = str(x)
+    y = str(y)
+    #base case for recursion
+    if len(x) == 1 and len(y) == 1:
+        return int(x) * int(y)
+    if len(x) < len(y):
+        x = zeroPad(x, len(y) - len(x))
+    elif len(y) < len(x):
+        y = zeroPad(y, len(x) - len(y))
+    n = len(x)
+    j = n//2
+    #for odd digit integers
+    if (n % 2) != 0:
+        j += 1
+    BZeroPadding = n - j
+    AZeroPadding = BZeroPadding * 2
+    a = int(x[:j])
+    b = int(x[j:])
+    c = int(y[:j])
+    d = int(y[j:])
+    #recursively calculate
+    ac = karatsubaMultiplication(a, c)
+    bd = karatsubaMultiplication(b, d)
+    k = karatsubaMultiplication(a + b, c + d)
+    A = int(zeroPad(str(ac), AZeroPadding, False))
+    B = int(zeroPad(str(k - ac - bd), BZeroPadding, False))
+    return A + B + bd
 
 
 
-def karatsuba(x,y):
-	"""Function to multiply 2 numbers in a more efficient manner than the grade school algorithm"""
-	if len(str(x)) == 1 or len(str(y)) == 1:
-		return x*y
-	else:
-		n = max(len(str(x)),len(str(y)))
-		nby2 = round(n / 2)
-		
-		a = int (x / 10**(nby2) ) # x1
-		b = int (x % 10**(nby2) )  # x0
-		c = int (y / 10**(nby2) ) # y1
-		d = int (y % 10**(nby2) ) # y0
-		
-		ac = karatsuba(a,c)  #z2
-		bd = karatsuba(b,d)  #z0
-		ad_plus_bc = karatsuba(a+b,c+d) - ac - bd #z1
-        
-        	# this little trick, writing n as 2*nby2 takes care of both even and odd n
-		    #prod = z2 * B2m + z1 Bm + z0
-		prod = ac * 10**(2*nby2) + (ad_plus_bc * 10**nby2) + bd
 
-		return prod
 
-product = karatsuba(12345, 6789 )
+product = karatsubaMultiplication(3141592653589793238462643383279502884197169399375105820974944592, 2718281828459045235360287471352662497757247093699959574966967627 )
+#product = karatsubaMultiplication(12045, 6709 )
 print(product)
