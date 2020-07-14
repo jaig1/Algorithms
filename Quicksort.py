@@ -1,9 +1,12 @@
+
+
 def partition(alist, first, last):
 
     print("New parsing iteration")
     print(alist[first:last+1])
 
     pivotvalue = alist[first]
+    print("pivot", pivotvalue)
 
     leftmark = first + 1
     rightmark = last
@@ -15,13 +18,13 @@ def partition(alist, first, last):
         while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
             leftmark = leftmark + 1
 
-        print ("LeftMark", leftmark, alist[leftmark], "\n")
+        print ("LeftMark", leftmark, "\n")
 
         print ("Parse from Right")
         while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
             rightmark = rightmark - 1
 
-        print ("RightMark", rightmark, alist[rightmark])
+        print ("RightMark", rightmark, "\n")
 
         if rightmark < leftmark:
             done = True
@@ -42,14 +45,20 @@ def partition(alist, first, last):
 
 
 def quick_sort(array, start, end):
+    comparisons = 0
     if start >= end:
-        return
+        return comparisons
 
     p = partition(array, start, end)
-    quick_sort(array, start, p-1)
-    quick_sort(array, p+1, end)
+    comparisons += (end-start)
+    comparisons +=quick_sort(array, start, p-1)
+    comparisons +=quick_sort(array, p+1, end)
+    return comparisons
 
-array = [54,26,93,17,77,31,44,55,20]
+#array = [54,26,93,17,77,31,44,55,20]
+
+array = [26, 54, 65]
 print(array, "\n")
-quick_sort(array, 0, len(array) - 1)
+comparisons = quick_sort(array, 0, len(array) - 1)
 print(array)
+print("# Comparisons ", comparisons)
